@@ -25,6 +25,6 @@ Em cada uma das etapas listadas, o projeto busca evidenciar três pilares essenc
 
 ### Referências
 
-A principal referência utilizada que guia o projeto são as aulas da disciplinas ministrada pelo docente responsável, seus slides e o livro base norteador.
+A principal referência utilizada que guia o projeto são as aulas da disciplinas ministrada pelo docente responsável, seus slides e o livro base norteador:
 
 CASTRO, Leandro Nunes de; FERRARI, Daniel Gomes. **Introdução à Mineração de Dados: Conceitos Básicos, Algoritmos e Aplicações**. São Paulo: Saraiva, 2016.
