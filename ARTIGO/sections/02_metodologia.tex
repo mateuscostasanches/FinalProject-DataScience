@@ -1,0 +1,135 @@
+A metodologia adotada neste trabalho foi dividida em cinco principais etapas norteadoras de acordo com os conceitos de Ciência de Dados [2]: Análise Exploratória, Pré-Processamento, Análise Descritiva, Agrupamento e Classificação. Inicialmente, durante a Análise Exploratória, a base de dados foi inspecionada para garantir a qualidade das informações utilizadas nos modelos preditivos, além de compreender as características dos dados e identificar possíveis padrões. Posteriormente, técnicas de normalização e redução de dimensionalidade foram aplicadas com a expectativa de se obter componentes que explicassem a variância total dos dados com menos atributos no Pré-processamento. Além disso, a visualização de diferentes gráficos e de medidas estatísticas de resumo calculadas na Análise Descritiva se fez crucial para se entender como os agrupamentos foram realizados na etapa futura ao segmentar os estudantes em grupos com características semelhantes. Por fim, diferentes algoritmos de classificação supervisionada foram empregados para predizer o risco de evasão acadêmica, permitindo a comparação de desempenho entre os modelos de acordo com as métricas propostas.
+
+\subsection{Análise Exploratória}
+A primeira etapa fundamental do projeto envolveu a análise exploratória da base de dados, com o objetivo de reconhecer padrões dentre os dados, além de entender a dimensionalidade e os tipos de dados da base, por meio de uma limpeza inicial que auxilia na etapa seguinte de pré-processamento. 
+
+Dessa forma, a limpeza inicial da base de dados, fundamentada em [5], revelou a existência de 35 atributos numéricos preditores e uma variável de rótulo (totalizando 36 colunas). Observou-se que os dados compreendem aspectos sociais, econômicos e demográficos de 4424 estudantes de variados cursos pertencentes a uma instituição de ensino superior em Portalegre, Portugal. Além disso, verificou-se a inexistência de valores nulos e de \textit{outliers} (observações que não seguem o comportamento ou não possuem a característica comum dos demais), visto que os dados foram submetidos previamente a um processo de filtragem realizado pelos responsáveis pela disponibilização da base no repositório online [3]. Contudo, percebeu-se um acentuado desbalanceamento entre as classes da variável alvo (\textit{Target}), conforme apresentado na Tabela I. Esse fator influencia diretamente o desempenho dos algoritmos de classificação implementados, uma vez que grande parte dos modelos tende a favorecer a classe majoritária, comprometendo a métrica de sensibilidade para os grupos com menor representação. Diante disso, na etapa de classificação, tornou-se necessária a aplicação de técnicas de balanceamento de dados, permitindo uma posterior comparação entre resultados obtidos antes e após essa intervenção.
+
+\begin{table}[htbp]
+\caption{Distribuição dos rótulos da coluna Target}
+\label{tab:target_distribution}
+\centering
+\begin{tabular}{lc}
+\hline
+\textbf{Classe} & \textbf{Quantidade de Amostras} \\
+\hline
+Graduate & 2209 \\
+Dropout  & 1421 \\
+Enrolled & 794  \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Pré-Processamento}
+Durante o pré-processamento dos dados, realizado por meio da linguagem de programação \textit{Python} pela ferramenta de \textit{Notebooks} da plataforma \textit{Jupyter Lab}, diferentes técnicas foram empregadas com o objetivo de preparar a base de dados para as etapas posteriores de análise, agrupamento e classificação. Primeiramente, a matriz de correlação das variáveis foi feita para a identificação de possíveis relações lineares crescentes ou decrescentes entre pares de variáveis dentre os dados coletados. Essa abordagem possibilita uma melhor compreensão da dependência entre os atributos, simplificando o volume de dados para as etapas posteriores. 
+
+A partir desta análise, observou-se a ausência de correlações acentuadas entre a maioria dos atributos, com exceção das variáveis associadas aos créditos, notas e provas de disciplinas cursadas pelos discentes durante o primeiro e segundo semestre letivos. Em seguida, utilizou-se a Análise dos Componentes Principais (PCA), buscando reduzir a dimensionalidade dos dados e evidenciar relações lineares que favoreçam a etapa de classificação posteriormente realizada. É necessário destacar que previamente à aplicação do algoritmo de redução, os dados foram submetidos à normalização de Máximos e Mínimos, escalonando todas as informações no intervalo de mesma magnitude [0,1]. Esse procedimento foi adotado devido à sensibilidade do algoritmo à escala das variáveis, garantindo que atributos de maior valor não exercessem influência desproporcional na determinação das componentes principais. A normalização foi realizada conforme a fórmula descrita abaixo, onde o valor resultante é o atributo original normalizado.
+\\
+\begin{equation} 
+a' = \frac{a - a_{\min}}{a_{\max} - a_{\min}} \left(a'_{\max} - a'_{\min}\right) + a'_{\min} \label{eq:minmax} 
+\end{equation}
+\\
+Essa etapa é fundamental, pois tanto o algoritmo de Análise de Principais Componentes, quanto determinados modelos de classificadores que foram aplicados posteriormente, como o K-Vizinhos mais próximos, são sensíveis à escala dos dados, ou seja, tendem a priorizar atributos com magnitudes maiores, de forma que atributos com escalas menores fiquem menos aparentes ou até sejam ignorados com base na distância calculada devido ao seu baixo valor numérico. Dessa forma, aplicou-se o PCA com o objetivo de reduzir a dimensionalidade dos dados. Entretanto, verificou-se que as três primeiras componentes explicavam apenas 37,6\% da variância total, conforme visto na Fig.~\ref{fig:pca}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\columnwidth]{imagens/PCA.png}
+    \caption{Projeção 3D das três componentes principais do PCA.}
+    \label{fig:pca}
+\end{figure}
+
+Adicionalmente, conforme ilustrado na Fig.~\ref{fig:pca_var}, observou-se que foram necessárias 11 componentes para preservar aproximadamente 80\% da variabilidade dos dados, ou seja, a técnica de redução aplicada não proporcionou uma simplificação significativa na base de dados. Dessa forma, optou-se por manter a base original nas análises subsequentes.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\columnwidth]{imagens/componentes_pca.png}
+    \caption{Variância acumulada explicada por componentes via PCA}
+    \label{fig:pca_var}
+\end{figure}
+
+\subsection{Análise Descritiva}
+Sequencialmente, a etapa de análise descritiva teve como finalidade caracterizar o comportamento das variáveis por meio de gráficos e medidas de resumo, conforme apresentado em [5]. Essa etapa é indispensável, uma vez que as etapas subsequentes de agrupamento e classificação visam à generalização de padrões a partir dos dados observados. Para isso, realizou-se a separação sistemática entre os 18 atributos categóricos e as 18 variáveis numéricas contidas na base de dados original.
+
+Para a inspeção visual das variáveis numéricas, foram gerados histogramas com empilhamento estruturados de acordo com as frequências observadas para cada classe da variável alvo (\textit{Target}). Adicionalmente, aplicaram-se  gráficos de dispersão por pares, focados especificamente em comparar a evolução das unidades curriculares (notas, aprovações, matrículas, provas, créditos e abandonos de avaliações) dos estudantes entre o primeiro e o segundo semestre letivos. Complementarmente, construíram-se diagramas de caixa, \textit{boxplots}, utilizados para comparar as distribuições quantitativas em relação aos rótulos da variável preditora: \textit{Dropout} (evadido), \textit{Enrolled} (matriculado) e \textit{Graduate} (graduado). Paralelamente, empregaram-se gráficos de setores para atributos com até cinco categorias distintas, permitindo uma visualização mais clara das proporções observadas. 
+
+Além da abordagem de visualização gráfica, o conjunto de dados base foi submetido a um mapeamento estatístico detalhado por meio do cálculo de medidas de resumo, separadas em quatro principais blocos analíticos:
+\\
+\subsubsection{Medidas de Tendência Central}
+Calculou-se a Média (M), Mediana (MED), Moda (MOD) e o Ponto Médio (PM) dos atributos quantitativos, estabelecendo um referencial dos valores centrais (típicos) dos dados dos estudantes.
+
+\subsubsection{Medidas de Dispersão}
+Computaram-se a Amplitude Total (AT), a Variância (VAR), o Desvio Padrão (DP) e o Coeficiente de Variação em porcentagem (CV), visando mensurar a variabilidade e a homogeneidade das notas e índices socioeconômicos.
+
+\subsubsection{Medidas de Posição Relativa:}
+Foram extraídos os limites do Escore-Z, os três Quartis (Q1, Q2 e Q3) e a a Amplitude Interquartil (IQR), fundamentais para a identificação de assimetrias e mapeamento da presença de dados discrepantes, \textit{outliers}.
+
+\subsubsection{Medidas de Associação}
+ Avaliaram-se os coeficientes de covariância e correlação para identificar dependências lineares entre as variáveis preditoras.
+\\
+\\
+Por fim, para os atributos categóricos, mapeou-se a frequência modal em conjunto com o número total de categorias exclusivas, identificando o perfil padrão predominante por atributo no corpo discente estudado.
+
+\subsection{Agrupamentos}
+Após a caracterização dos dados pela análise descritiva, a etapa de agrupamento foi implementada com o objetivo de segmentar o conjunto de dados em subconjuntos distintos (clusters) baseados em medidas de proximidade. Ao aplicar os algoritmos K-Means e GMM (Gaussian Mixture Model), buscou-se maximizar a homogeneidade interna de cada grupo e a heterogeneidade entre eles. O propósito dessa abordagem foi otimizar a relação within-cluster (compactação interna) e between-cluster (separabilidade), garantindo que atributos semelhantes permanecessem próximos no mesmo grupo e que os agrupamentos gerados fossem bem distanciados entre si. Essa estruturação dos dados visa revelar subperfis de discentes, fornecendo uma base sólida para que os algoritmos de classificação possam, posteriormente, predizer o risco de evasão com maior precisão.
+
+Diante disso, o primeiro método de particionamento aplicado foi o \textit{K-Means}. Esse algoritmo busca agrupar as observações com base em uma medida de similaridade, utilizando por padrão a distância euclidiana em relação a centróides definidos a partir do parâmetro \(K\), que representa o número predeterminado de agrupamentos. Para determinar o valor mais adequado desse parâmetro, foram empregados conjuntamente o Método do Cotovelo (\textit{Elbow Method}) e o Método da Silhueta (\textit{Silhouette Method}), avaliando-se o comportamento da soma dos quadrados intra-clusters (WCSS -- \textit{Within-Cluster Sum of Squares}) e a qualidade da separação entre os agrupamentos para cada valor de \(K\) analisado.
+
+Adicionalmente, explorou-se o modelo de agrupamento \textit{Gaussian Mixture Model} (GMM). Diferentemente do K-Means, o GMM é um modelo probabilístico que assume que os dados são gerados a partir de uma combinação de distribuições gaussianas. O treinamento desse modelo é realizado por meio do algoritmo Expectation-Maximization (EM), um procedimento iterativo composto por duas etapas. Na etapa de \textit{Expectation}, são calculadas as probabilidades de cada observação pertencer a cada componente gaussiana. Em seguida, na etapa de \textit{Maximization}, os parâmetros de média, variância e peso das distribuições são atualizados com base nas probabilidades estimadas. Essa abordagem permite identificar agrupamentos com diferentes formatos geométricos e atribuir probabilidades de pertencimento às observações (\textit{soft clustering}), capturando de maneira mais sensível possíveis nuances nos perfis de risco de evasão.
+
+\subsection{Classificação}
+Para a etapa final, de classificação, julgou-se necessária a aplicação de duas técnicas de balanceamento de dados, com a finalidade de avaliar e comparar o desempenho dos modelos treinados sob experimentos em que as classes estivessem desbalanceadas e balanceadas de maneiras distintas com algoritmos distintos. Conforme evidenciado na Tabela I na subseção de Análise Exploratória, a variável alvo original exibe uma disparidade volumétrica severa. Para mitigar o viés em direção às classes majoritárias, adotaram-se abordagens de superamostragem via SMOTE (\textit{Synthetic Minority Oversampling Technique}), que iguala a quantidade de amostras das classes minoritárias em relação à classe majoritária com dados sintéticos e de subamostragem via \textit{Undersampling}, que usa apenas uma parcela da quantidade de dados iguais ao total da classe minoritária. A Tabela II sumariza a distribuição quantitativa das instâncias para cada rótulo de acordo com a estratégia de amostragem empregada.
+
+\begin{table}[htbp]
+\caption{Distribuição da classe \textit{Target} com e sem balanceamento aplicado}
+\label{tab:balanceamento}
+\centering
+\footnotesize
+\begin{tabular}{lccc}
+\hline
+\textbf{Classe} &
+\makecell{\textbf{Original}} &
+\makecell{\textbf{Smote}} &
+\makecell{\textbf{Undersampling}} \\
+\hline
+Dropout  & 980  & 1567 & 549 \\
+Enrolled & 549  & 1567 & 549 \\
+Graduate & 1567 & 1567 & 549 \\
+\hline
+\end{tabular}
+\end{table}
+
+Como fase conclusiva da metodologia, executou-se a tarefa de classificação para a construção de quatro modelos preditivos distintos seguindo o embasamento teórico [2]: \textit{K-Nearest Neighbors} (KNN) que classifica com base na distância de uma amostra em relação ao resto dos dados já classificados, \textit{Decision Tree} (Árvore de Decisão) que cria uma árvore binária com base nos parâmetros de classificação e nos atributos, \textit{Support Vector Machine} (SVM) que traça diferentes funções que separam os dados e \textit{Neural Network} (Rede Neural), uma rede de múltiplas camadas de neurônios baseada no \textit{Perceptron}. Após os procedimentos de treinamento e validação de cada arquitetura, realizou-se um comparativo direto dos resultados mapeados pelas respectivas matrizes de confusão. A avaliação quantitativa e o desempenho geral dos modelos classificadores [5] foram mensurados a partir das seguintes métricas estatísticas:
+\\
+\subsubsection{Acurácia}
+Corresponde ao total de predições corretas realizadas pelo modelo em relação ao total de instâncias avaliadas. 
+\begin{equation} 
+\text{Acurácia} = \frac{VP + VN}{VP + VN + FP + FN} 
+\label{eq:accuracy} 
+\end{equation}
+\\
+\subsubsection{Precisão}
+Avalia a exatidão das predições positivas, por meio da razão entre verdadeiros positivos e total de elementos classificados como positivos.
+\begin{equation}
+\text{Precisão} = \frac{VP}{VP + FP}
+\label{eq:precision}
+\end{equation}
+\\
+\subsubsection{Recall}
+Avalia a capacidade do modelo em capturar instâncias pertencentes a uma classe específica.
+\begin{equation}
+\text{Recall} = \frac{VP}{VP + FN}
+\label{eq:recall}
+\end{equation}
+\\
+\subsubsection{F1-Score}
+Média harmônica entre Precisão e Recall, de forma a fornecer uma medida balanceada para a avaliação da performance do classificador em cenários de dados desbalanceados.
+\begin{equation}
+F_1 =2 \cdot \frac{\text{Precisão} \times \text{Recall}} {\text{Precisão} + \text{Recall}}
+\label{eq:f1}
+\end{equation}
+\\
+De forma que \(VP\) indica dados verdadeiramente positivos, \(VN\) representa os verdadeiramente negativos, já \(FP\) indica dados falsos positivos e \(FN\) quantifica os falsos negativos obtidos.
+
+Assim, para a validação das métricas de desempenho, o conjunto de dados foi subdividido na proporção de 70\% para a etapa de treinamento e 30\% para a fase de testes. A fim de mitigar o sobreajuste (\textit{overfitting}) e garantir robustez na escolha dos hiperparâmetros para usabilidade dos modelos preditivos, aplicou-se a técnica de busca em grade em validação cruzada (\textit{Grid Search \& Cross-Validation}) sobre o conjunto de treino. Esse procedimento foi executado de forma independente para cada um dos quatro classificadores sob os três cenários amostrais descritos na Tabela~\ref{tab:balanceamento}. 
+
+A partir das melhores combinações de parâmetros identificadas pelo \textit{GridSearchCV}, os modelos finais foram avaliados utilizando o conjunto de testes, composto por dados inéditos ao processo de treinamento. Em seguida, foram geradas as respectivas matrizes de confusão e calculadas as métricas de desempenho, incluindo a Acurácia global e as métricas macro de Precisão, Recall e F1-Score. A abordagem macro consiste no cálculo da média aritmética simples dos resultados obtidos individualmente para cada classe, atribuindo o mesmo peso a todas elas. Essa estratégia é particularmente relevante em cenários com desbalanceamento de classes, pois reduz a influência da classe majoritária na avaliação do desempenho das classes minoritárias. Dessa forma, foi possível realizar uma comparação direta e mais equilibrada entre os diferentes modelos treinados para o problema de predição da evasão acadêmica.
