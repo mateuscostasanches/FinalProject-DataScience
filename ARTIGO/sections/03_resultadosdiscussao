@@ -1,0 +1,121 @@
+A análise dos resultados obtidos neste trabalho permitiu aprofundar a compreensão acerca da estrutura dos dados acadêmicos e socioeconômicos dos estudantes avaliados. Inicialmente, a discussão dos principais achados concentrou-se na avaliação do comportamento do algoritmo de Análise de Componentes Principais (\textit{Principal Component Analysis} - PCA) e na análise da matriz de correlação entre as variáveis. 
+
+Conforme descrito na seção de Metodologia, a análise dos componentes principais não evidenciou uma estrutura linearmente separável capaz de distinguir claramente os diferentes perfis estudantis, apresentando cerca de 36\% de variância explicada para apenas 3 componentes. Para a obtenção de uma variância explicada superior, constatou-se que a redução de dimensionalidade não seria vantajosa, visto que a eliminação de atributos resultaria na perda de informações potencialmente mais relevantes do que a manutenção das variáveis em sua configuração original. Em contrapartida, a matriz de correlação revelou a existência de algumas associações lineares relevantes entre atributos específicos, destacando-se as fortes correlações positivas observadas entre variáveis relacionadas a provas, notas e créditos das disciplinas frequentadas nas unidades curriculares do primeiro e do segundo semestres.
+
+A análise descritiva também possibilitou delimitar um perfil geral dos estudantes presentes na base de dados a partir das categorias modais dos atributos categóricos e das medidas de resumo calculadas [6]. Os resultados indicaram a predominância de estudantes do sexo feminino, solteiros, jovens, ingressantes por meio da primeira fase do contingente geral, oriundos do ensino secundário, que necessitaram se deslocar de suas cidades de origem para estudar na instituição e matriculados majoritariamente no curso de Enfermagem. Entretanto, os resultados mais relevantes para a análise realizada residem nos grupos menos frequentes e nos padrões associados ao desempenho acadêmico.
+
+O gráfico de dispersão apresentado na Fig.~\ref{fig:dispersao_notas} evidencia que estudantes com maiores notas ao final do primeiro semestre tendem a continuar matriculados e a se formarem com maior frequência. Por outro lado, estudantes com menores notas em algum dos semestres apresentam maior concentração entre os casos classificados como evasão, sugerindo que o desempenho acadêmico em períodos iniciais pode constituir um importante indicador de risco para o abandono do curso.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\columnwidth]{imagens/dispersao_notas.png}
+    \caption{Gráfico de dispersão das notas obtidas no primeiro semestre em função da situação acadêmica dos estudantes.}
+    \label{fig:dispersao_notas}
+\end{figure}
+
+A análise das medidas de resumo corrobora os padrões observados na Fig.~\ref{fig:dispersao_notas} e fornece evidências adicionais sobre a relação entre desempenho acadêmico e evasão estudantil. As notas obtidas nas unidades curriculares do primeiro e do segundo semestres apresentaram médias de 10,64 e 10,23, respectivamente, inferiores às medianas correspondentes (12,29 e 12,20). Além disso, a moda igual a zero em ambos os semestres indica que a ausência de aproveitamento acadêmico constitui o resultado mais frequente na amostra. Esse comportamento revela distribuições influenciadas por estudantes com desempenho significativamente inferior ao restante da população, resultado compatível com os padrões observados entre os casos de evasão. Dessa forma, os indicadores descritivos reforçam a hipótese de que dificuldades acadêmicas estão associadas a uma maior propensão ao abandono do curso.
+
+Adicionalmente, observou-se que o número médio de unidades curriculares aprovadas foi inferior ao número médio de unidades matriculadas nos dois semestres analisados. No primeiro semestre, os estudantes cursaram, em média, 6,27 unidades curriculares e obtiveram aprovação em 4,71 delas. No segundo semestre, embora a média de matrículas tenha permanecido praticamente estável (6,23), a média de aprovações reduziu-se para 4,44. Somado a isso, os elevados coeficientes de variação das variáveis relacionadas às aprovações (65,74\% no primeiro semestre e 67,96\% no segundo) evidenciam uma alta heterogeneidade no desempenho acadêmico, sugerindo a coexistência de diferentes perfis de estudantes na população analisada.
+
+A Fig.~\ref{fig:distribuicao_idades} apresenta a distribuição das idades no momento de ingresso na instituição de ensino, evidenciando que a maior parte dos estudantes se concentra entre 18 e 22 anos. Esse resultado é consistente com as medidas de resumo obtidas, nas quais a idade média foi de 23,27 anos, a mediana de 20 anos e a moda de 18 anos, indicando uma distribuição assimétrica à direita, caracterizada pela predominância de ingressantes jovens e pela presença de um grupo menor de estudantes com idades mais elevadas.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\columnwidth]{imagens/distribuicao_idades.png}
+    \caption{Gráfico de distribuição das frequências de idades em relação ao rótulo dos dados.}
+    \label{fig:distribuicao_idades}
+\end{figure}
+
+De maneira complementar, observa-se que a classe \textit{Dropout} apresenta uma distribuição mais dispersa ao longo das faixas etárias, mantendo frequências relativamente maiores em idades superiores a 25 anos quando comparada às classes \textit{Graduate} e \textit{Enrolled}. Embora os maiores volumes absolutos de evasão também ocorram entre os estudantes mais jovens, em razão da maior representatividade desse grupo na amostra, esse comportamento sugere que ingressantes em idades mais avançadas podem estar associados a uma maior vulnerabilidade ao abandono do curso. Em conjunto, tais evidências indicam que fatores relacionados tanto ao desempenho acadêmico quanto às características demográficas podem contribuir para a compreensão dos diferentes perfis de risco de evasão identificados neste estudo.
+
+A etapa de Agrupamento permitiu identificar padrões relevantes na estrutura dos dados por meio da aplicação do algoritmo \textit{K-Means} [2]. Os resultados obtidos sugerem que as classes mais extremas, \textit{Dropout} e \textit{Graduate}, apresentam características mais bem definidas e, consequentemente, tendem a ser mapeadas com maior facilidade. Em contrapartida, a classe \textit{Enrolled} demonstra maior complexidade, uma vez que seus registros compartilham características com as demais categorias, dificultando sua separação. Como resultado, diversas amostras dessa classe são classificadas incorretamente como \textit{Graduate} ou \textit{Dropout}, evidenciando a existência de regiões de sobreposição entre os grupos e reforçando a dificuldade inerente ao problema de classificação.
+
+A análise conjunta dos métodos do Cotovelo e da Silhueta indicou que a configuração mais adequada para o algoritmo \textit{K-Means} corresponde à utilização de dois agrupamentos. Conforme apresentado na Fig.~\ref{fig:cotovelo_grafico}, observa-se uma redução expressiva da Soma dos Quadrados Intra-Clusters ($WCSS$) ao passar de um para dois grupos. A partir desse ponto, a diminuição do indicador ocorre de forma mais gradual, caracterizando o ponto de inflexão conhecido como ``cotovelo'' e indicando que o acréscimo de novos agrupamentos produz ganhos limitados na representação da estrutura dos dados.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{imagens/metodo_cotovelo.png}
+\caption{Gráfico dos resultados obtidos pelo Método do Cotovelo para determinação do número ideal de clusters no algoritmo K-Means.}
+\label{fig:cotovelo_grafico}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{imagens/metodo_silhueta.png}
+\caption{Gráfico dos resultados obtidos pelo Método da Silhueta para determinação do número ideal de clusters no algoritmo K-Means.}
+\label{fig:silhueta_grafico}
+\end{figure}
+
+Essa conclusão é corroborada pelo Método da Silhueta, apresentado na Fig.~\ref{fig:silhueta_grafico}, que atingiu seu maior coeficiente médio para $K=2$. Esse resultado indica que os elementos de cada agrupamento possuem elevada similaridade interna e boa separação em relação aos elementos do outro \textit{cluster}. Para valores superiores de $K$, observa-se uma redução do coeficiente de silhueta, sugerindo que a subdivisão dos dados em mais grupos compromete a qualidade dos agrupamentos.
+
+Com a definição de dois agrupamentos como configuração ideal, o algoritmo \textit{K-Means} foi aplicado ao conjunto de dados para a formação dos \textit{clusters}. A visualização resultante, apresentada na Fig.~\ref{fig:kmeans}, evidencia a distribuição das observações nos agrupamentos identificados pelo algoritmo, bem como a posição dos respectivos centróides. Observa-se que os dados tendem a se organizar em dois grandes grupos, corroborando os resultados obtidos pelos métodos do Cotovelo e da Silhueta. 
+
+Além disso, a presença de regiões de interseção entre os agrupamentos reforça a dificuldade de separação de algumas amostras, especialmente aquelas pertencentes à classe \textit{Enrolled}, cuja proximidade com as demais categorias contribui para a ocorrência de classificações equivocadas nos modelos supervisionados.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{imagens/kmeans.png}
+\caption{Visualização dos agrupamentos obtidos pelo algoritmo K-Means com dois clusters.}
+\label{fig:kmeans}
+\end{figure}
+
+Portanto, os resultados indicam que a estrutura natural da base de dados é melhor representada por dois agrupamentos principais. Tal comportamento sugere a existência de dois perfis predominantes de estudantes, enquanto a classe \textit{Enrolled} ocupa uma posição intermediária entre eles, o que ajuda a explicar a maior dificuldade observada na sua classificação ao longo dos experimentos realizados.
+
+\subsection{Comparativo dos Modelos em Relação ao Balanceamento}
+Após a análise dos agrupamentos, procedeu-se à etapa de classificação dos dados [3]. Os modelos avaliados foram comparados por meio das métricas de acurácia, precisão, recall e $F_1$-Score, permitindo uma análise quantitativa do desempenho de cada abordagem nos diferentes cenários experimentais. A Tabela~\ref{tab:comparacao_classificadores} apresenta uma visão consolidada dos resultados obtidos, possibilitando a comparação entre os algoritmos e as estratégias de balanceamento empregadas.
+
+\begin{table}[htbp]
+\caption{Comparação geral dos classificadores utilizados por métricas de desempenho}
+\label{tab:comparacao_classificadores}
+\centering
+\scriptsize
+\begin{tabular}{llcccc}
+\hline
+\textbf{Algoritmo} & \textbf{Modelo} & \textbf{Acc} & \textbf{Prec} & \textbf{Rec} & \textbf{F1} \\
+\hline
+\multirow{3}{*}{KNN}
+& Original   & 0.68 & 0.60 & 0.54 & 0.53 \\
+& SMOTE      & 0.60 & 0.57 & 0.57 & 0.56 \\
+& Red. Dados & 0.61 & 0.62 & 0.59 & 0.59 \\
+\hline
+\multirow{3}{*}{Árvore Decisão}
+& Original   & 0.73 & 0.69 & 0.64 & 0.65 \\
+& SMOTE      & 0.70 & 0.65 & 0.65 & 0.65 \\
+& Red. Dados & 0.69 & 0.67 & 0.66 & 0.65 \\
+\hline
+\multirow{3}{*}{SVM}
+& Original   & 0.76 & 0.71 & 0.68 & 0.68 \\
+& SMOTE      & 0.71 & 0.65 & 0.65 & 0.65 \\
+& Red. Dados & 0.73 & 0.71 & 0.70 & 0.69 \\
+\hline
+\multirow{3}{*}{Rede Neural}
+& Original   & 0.76 & 0.71 & 0.68 & 0.68 \\
+& SMOTE      & 0.73 & 0.67 & 0.67 & 0.67 \\
+& Red. Dados & 0.73 & 0.70 & 0.70 & 0.69 \\
+\hline
+\end{tabular}
+\end{table}
+
+De forma geral, os melhores resultados foram obtidos pelos modelos SVM e Rede Neural aplicados ao conjunto de dados original, ambos alcançando acurácia de 0,76 e $F_1$-Score de 0,68. Observa-se também que a aplicação do SMOTE [6] não resultou em ganhos significativos de desempenho para nenhum dos classificadores, enquanto a redução de dimensionalidade apresentou resultados competitivos, especialmente para o SVM e a Rede Neural, mantendo métricas próximas às obtidas com os dados originais.
+
+\subsubsection{K-Nearest Neighbors}
+Os melhores hiperparâmetros encontrados para o algoritmo \textit{K-Nearest Neighbors} ($K$-NN) foram $k=19$ e distância Euclidiana para o conjunto original; $k=3$ e distância Euclidiana para o conjunto balanceado com SMOTE; e $k=15$ e distância Euclidiana para o conjunto submetido à redução de dimensionalidade. O modelo treinado com os dados originais apresentou a maior acurácia (0,68), enquanto a redução de dimensionalidade produziu os melhores valores de precisão (0,62), recall (0,59) e $F_1$-Score (0,59). Já o conjunto balanceado com SMOTE obteve desempenho inferior em praticamente todas as métricas avaliadas.
+
+Os resultados indicam que o $K$-NN foi sensível às alterações realizadas nos dados, principalmente devido à sua dependência do cálculo de distâncias entre amostras. A redução de dimensionalidade contribuiu para um melhor equilíbrio entre as métricas, possivelmente pela remoção de atributos redundantes ou pouco informativos, mitigando os efeitos da alta dimensionalidade. Em contrapartida, o balanceamento por SMOTE [6] não trouxe ganhos expressivos para o modelo, sugerindo que a geração de amostras sintéticas não favoreceu a definição das vizinhanças utilizadas pelo classificador.
+
+\subsubsection{Árvore de Decisão}
+Para a Árvore de Decisão, as melhores configurações encontradas utilizaram profundidade máxima igual a 5 para o conjunto original, 19 para o conjunto balanceado com SMOTE e 3 para o conjunto com redução de dimensionalidade. O melhor desempenho geral foi obtido com os dados originais, alcançando acurácia de 0,73, precisão de 0,69, recall de 0,64 e $F_1$-Score de 0,65. As abordagens com SMOTE e redução de dimensionalidade apresentaram resultados bastante próximos, mantendo o $F_1$-Score em 0,65.
+
+A pequena variação observada entre os cenários demonstra que a Árvore de Decisão foi o modelo mais robusto em relação às técnicas de pré-processamento aplicadas. O aumento significativo da profundidade ótima após o SMOTE sugere um acréscimo na complexidade do espaço de decisão, enquanto a redução de dimensionalidade permitiu a construção de uma árvore muito mais simples sem perda significativa de desempenho. Dessa forma, embora os dados originais tenham produzido os melhores resultados, a Árvore de Decisão mostrou estabilidade e boa capacidade de adaptação às diferentes abordagens empregadas.
+
+\subsubsection{Support Vector Machine}
+O \textit{Support Vector Machine} (SVM) apresentou um dos melhores desempenhos entre os classificadores avaliados. Os melhores hiperparâmetros encontrados foram $C=100$ e \textit{kernel} linear para o conjunto original; $C=100$ e \textit{kernel} RBF para o conjunto balanceado com SMOTE; e $C=10$ e \textit{kernel} linear para o conjunto com redução de dimensionalidade. O modelo treinado com os dados originais obteve acurácia de 0,76, precisão de 0,71, recall de 0,68 e $F_1$-Score de 0,68, enquanto a redução de dimensionalidade proporcionou o melhor $F_1$-Score (0,69) e recall (0,70).
+
+A mudança do \textit{kernel} linear para RBF após a aplicação do SMOTE sugere que o balanceamento tornou a distribuição dos dados mais complexa, exigindo fronteiras de decisão não lineares. Entretanto, essa alteração não resultou em melhorias de desempenho, visto que todas as métricas sofreram redução. Por outro lado, a redução de dimensionalidade manteve resultados próximos aos obtidos com os dados originais e produziu o melhor equilíbrio entre precisão e recall. Esses resultados indicam que o problema possui uma estrutura relativamente bem separável e que a eliminação de atributos redundantes favoreceu a capacidade de generalização do SVM.
+
+\subsubsection{Multi-Layer Perceptron}
+A Rede Neural \textit{Multi-Layer Perceptron} (MLP) apresentou desempenho semelhante ao SVM, figurando entre os melhores modelos avaliados. Os melhores hiperparâmetros encontrados foram uma camada oculta com 32 neurônios e ativação $\tanh$ para o conjunto original, e uma camada oculta com 64 neurônios para os conjuntos balanceado e reduzido, utilizando ativações \textit{ReLU} e $\tanh$, respectivamente. O conjunto original alcançou acurácia de 0,76, precisão de 0,71, recall de 0,68 e $F_1$-Score de 0,68, enquanto a redução de dimensionalidade obteve o maior $F_1$-Score (0,69) e recall (0,70).
+
+O aumento da complexidade da arquitetura após o balanceamento por SMOTE sugere que as amostras sintéticas exigiram maior capacidade de representação da rede neural. Apesar disso, houve redução das métricas de desempenho, indicando que o balanceamento não trouxe benefícios significativos para o modelo. Em contrapartida, a redução de dimensionalidade preservou as informações mais relevantes do conjunto de dados e favoreceu a generalização da rede, produzindo o melhor equilíbrio entre precisão e recall. Assim como observado para o SVM, os resultados indicam que a redução de dimensionalidade foi mais eficaz do que o balanceamento por SMOTE para este problema.
+\\
+Por conseguinte, observou-se que a redução de dimensionalidade foi a estratégia de pré-processamento que apresentou os melhores resultados para a maioria dos classificadores, proporcionando os maiores valores de $F_1$-Score para $K$-NN, SVM e MLP, além de manter um desempenho competitivo para a Árvore de Decisão. Em contrapartida, o balanceamento artificial por SMOTE [5] não produziu ganhos significativos e, na maior parte dos casos, resultou em redução das métricas avaliadas. Esses resultados sugerem que a remoção de atributos redundantes ou pouco relevantes teve maior impacto na capacidade de generalização dos modelos do que o balanceamento artificial das classes para o conjunto de dados estudado.
